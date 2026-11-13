@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Register')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<div class="container" style="max-width: 520px;">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h3 class="mb-3">Create an account</h3>
+            <div th:replace="~{fragments :: messages}"></div>
+
+            <form th:action="@{/register}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">I am a...</label>
+                    <select name="role" class="form-select" required>
+                        <option value="CUSTOMER" th:selected="${param.role == null or param.role[0] == 'CUSTOMER'}">Customer</option>
+                        <option value="RESTAURANT_OWNER" th:selected="${param.role != null and param.role[0] == 'RESTAURANT_OWNER'}">Restaurant owner</option>                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Full name</label>
+                    <input type="text" name="name" class="form-control" th:value="${param.name}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" th:value="${param.email}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password (min 6 characters)</label>
+                    <input type="password" name="password" class="form-control" minlength="6" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" name="phone" class="form-control" th:value="${param.phone}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Address (used as default delivery address)</label>
+                    <input type="text" name="address" class="form-control" th:value="${param.address}">
+                </div>
+                <button type="submit" class="btn btn-danger w-100">Register</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

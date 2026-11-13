@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Admin')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<div class="container">
+    <h2>Admin overview</h2>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4"><div class="card text-center"><div class="card-body">
+            <div class="fs-2 fw-bold" th:text="${users.size()}">0</div>Users</div></div></div>
+        <div class="col-md-4"><div class="card text-center"><div class="card-body">
+            <div class="fs-2 fw-bold" th:text="${restaurants.size()}">0</div>Restaurants</div></div></div>
+        <div class="col-md-4"><div class="card text-center"><div class="card-body">
+            <div class="fs-2 fw-bold" th:text="${orders.size()}">0</div>Orders</div></div></div>
+    </div>
+
+    <h4>Users</h4>
+    <table class="table table-sm bg-white">
+        <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th></tr></thead>
+        <tbody>
+        <tr th:each="u : ${users}">
+            <td th:text="${u.id}"></td><td th:text="${u.name}"></td><td th:text="${u.email}"></td>
+            <td th:text="${u.phone}"></td><td th:text="${u.role}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h4 class="mt-4">Restaurants</h4>
+    <table class="table table-sm bg-white">
+        <thead><tr><th>#</th><th>Name</th><th>Cuisine</th><th>Owner</th><th>Open</th></tr></thead>
+        <tbody>
+        <tr th:each="r : ${restaurants}">
+            <td th:text="${r.id}"></td><td th:text="${r.name}"></td><td th:text="${r.cuisine}"></td>
+            <td th:text="${r.owner.name}"></td><td th:text="${r.open} ? 'Yes' : 'No'"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h4 class="mt-4">Orders</h4>
+    <table class="table table-sm bg-white">
+        <thead><tr><th>#</th><th>Date</th><th>Customer</th><th>Restaurant</th><th>Type</th><th>Total</th><th>Status</th></tr></thead>
+        <tbody>
+        <tr th:each="o : ${orders}">
+            <td th:text="${o.id}"></td>
+            <td th:text="${#temporals.format(o.createdAt, 'dd MMM HH:mm')}"></td>
+            <td th:text="${o.customer.name}"></td>
+            <td th:text="${o.restaurant.name}"></td>
+            <td th:text="${o.fulfilmentType.label}"></td>
+            <td th:text="'$' + ${#numbers.formatDecimal(o.totalAmount, 1, 2)}"></td>
+            <td><span th:replace="~{fragments :: statusBadge(${o.status})}"></span></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

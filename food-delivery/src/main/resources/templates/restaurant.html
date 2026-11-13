@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head(${restaurant.name})}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<div class="container">
+    <div th:replace="~{fragments :: messages}"></div>
+
+    <a th:href="@{/}" class="small">&larr; All restaurants</a>
+    <h2 class="mt-2" th:text="${restaurant.name}">Restaurant</h2>
+    <p class="text-muted mb-1">
+        <span th:text="${restaurant.cuisine}">Cuisine</span> &middot;
+        <span th:text="${restaurant.address}">Address</span>
+    </p>
+    <p class="mb-1">
+        <span th:if="${averageRating != null}" class="stars">
+            &#9733; <span th:text="${#numbers.formatDecimal(averageRating, 1, 1)}">4.5</span>
+            <small class="text-muted" th:text="'(' + ${reviews.size()} + ' reviews)'"></small>
+        </span>
+        <span th:if="${averageRating == null}" class="text-muted small">No reviews yet</span>
+    </p>
+    <p th:text="${restaurant.description}"></p>
+
+    <div th:unless="${restaurant.open}" class="alert alert-warning">This restaurant is closed and not taking orders right now.</div>
+
+    <h4 class="mt-4">Menu</h4>
+    <p th:if="${menuItems.isEmpty()}" class="text-muted">No items on the menu yet.</p>
+
+    <div class="list-group mb-4">
+        <div class="list-group-item d-flex justify-content-between align-items-center" th:each="item : ${menuItems}">
+            <div>
+                <strong th:text="${item.name}">Item</strong>
+                <div class="small text-muted" th:text="${item.description}"></div>
+                <div class="fw-semibold" th:text="'$' + ${#numbers.formatDecimal(item.price, 1, 2)}">$0.00</div>
+            </div>
+
+            <!-- Customers (and visitors, who will be asked to log in) can add to cart -->
+            <form th:if="${restaurant.open and (currentUser == null or currentUser.customer)}"
+                  th:action="@{/cart/add}" method="post" class="d-flex gap-2">
+                <input type="hidden" name="menuItemId" th:value="${item.id}">
+                <input type="number" name="quantity" value="1" min="1" max="20" class="form-control form-control-sm" style="width: 70px;">
+                <button type="submit" class="btn btn-sm btn-danger">Add</button>
+            </form>
+        </div>
+    </div>
+
+    <h4>Reviews</h4>
+    <p th:if="${reviews.isEmpty()}" class="text-muted">Be the first to review after your order is delivered.</p>
+    <div class="card mb-2" th:each="rev : ${reviews}">
+        <div class="card-body py-2">
+            <span class="stars" th:text="${#strings.repeat('★', rev.rating)}">★★★★★</span>
+            <strong class="ms-2" th:text="${rev.customer.name}">Name</strong>
+            <small class="text-muted ms-2" th:text="${#temporals.format(rev.createdAt, 'dd MMM yyyy')}"></small>
+            <div th:text="${rev.comment}"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

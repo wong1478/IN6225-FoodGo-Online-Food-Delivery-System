@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Restaurants')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<div class="container">
+    <div th:replace="~{fragments :: messages}"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Restaurants</h2>
+        <form th:action="@{/}" method="get" class="d-flex gap-2">
+            <input type="text" name="q" class="form-control" placeholder="Search name or cuisine" th:value="${q}">
+            <button class="btn btn-outline-danger" type="submit">Search</button>
+        </form>
+    </div>
+
+    <p th:if="${restaurants.isEmpty()}" class="text-muted">No restaurants found.</p>
+
+    <div class="row g-3">
+        <div class="col-md-4" th:each="r : ${restaurants}">
+            <div class="card h-100 shadow-sm restaurant-card">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${r.name}">Name</h5>
+                    <span class="badge bg-light text-dark border" th:text="${r.cuisine}">Cuisine</span>
+                    <span th:if="${r.open}" class="badge bg-success">Open</span>
+                    <span th:unless="${r.open}" class="badge bg-secondary">Closed</span>
+                    <p class="card-text small text-muted mt-2" th:text="${r.description}"></p>
+                    <p class="card-text small" th:text="${r.address}"></p>
+                </div>
+                <div class="card-footer bg-white border-0">
+                    <a th:href="@{/restaurants/{id}(id=${r.id})}" class="btn btn-danger btn-sm">View menu</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

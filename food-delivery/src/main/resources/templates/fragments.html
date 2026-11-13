@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' | FoodGo'">FoodGo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<nav th:fragment="navbar" class="navbar navbar-dark bg-danger mb-4">
+    <div class="container">
+        <a class="navbar-brand fw-bold" th:href="@{/}">FoodGo</a>
+
+        <div class="d-flex align-items-center gap-3">
+            <a class="nav-link text-white" th:href="@{/}">Restaurants</a>
+
+            <!-- Customer links -->
+            <th:block th:if="${currentUser != null and currentUser.customer}">
+                <a class="nav-link text-white" th:href="@{/orders}">My Orders</a>
+                <a class="nav-link text-white" th:href="@{/cart}">
+                    Cart <span class="badge bg-light text-danger" th:text="${cartCount}">0</span>
+                </a>
+            </th:block>
+
+            <!-- Restaurant owner links -->
+            <th:block th:if="${currentUser != null and currentUser.owner}">
+                <a class="nav-link text-white" th:href="@{/owner}">My Restaurant</a>
+                <a class="nav-link text-white" th:href="@{/owner/orders}">Incoming Orders</a>
+            </th:block>
+
+            <!-- Admin links -->
+            <a th:if="${currentUser != null and currentUser.admin}" class="nav-link text-white"
+               th:href="@{/admin}">Admin</a>
+
+            <!-- Login / logout -->
+            <th:block th:if="${currentUser == null}">
+                <a class="btn btn-sm btn-light" th:href="@{/login}">Login</a>
+                <a class="btn btn-sm btn-outline-light" th:href="@{/register}">Register</a>
+            </th:block>
+            <th:block th:if="${currentUser != null}">
+                <span class="text-white small">Hi, <strong th:text="${currentUser.name}">User</strong></span>
+                <a class="btn btn-sm btn-outline-light" th:href="@{/logout}">Logout</a>
+            </th:block>
+        </div>
+    </div>
+</nav>
+
+<div th:fragment="messages">
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+</div>
+
+<span th:fragment="statusBadge(status)" class="badge"
+      th:classappend="${status.badgeClass}" th:text="${status.label}">Status</span>
+
+</body>
+</html>

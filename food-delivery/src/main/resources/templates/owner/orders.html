@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Incoming Orders')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<div class="container">
+    <div th:replace="~{fragments :: messages}"></div>
+    <h2>Incoming orders</h2>
+
+    <p th:if="${restaurant == null}" class="text-muted">Set up your restaurant first on the <a th:href="@{/owner}">My Restaurant</a> page.</p>
+    <p th:if="${restaurant != null and orders.isEmpty()}" class="text-muted">No orders yet.</p>
+
+    <div class="card shadow-sm mb-3" th:each="o : ${orders}">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <h5>
+                    Order #<span th:text="${o.id}"></span>
+                    <span th:replace="~{fragments :: statusBadge(${o.status})}"></span>
+                    <span class="badge bg-light text-dark border" th:text="${o.fulfilmentType.label}">Delivery</span>
+                </h5>
+                <small class="text-muted" th:text="${#temporals.format(o.createdAt, 'dd MMM yyyy HH:mm')}"></small>
+            </div>
+            <p class="mb-1 small">
+                Customer: <strong th:text="${o.customer.name}"></strong>
+                (<span th:text="${o.customer.phone}"></span>)
+                &middot; Payment: <span th:text="${o.paymentMethod} + ' (' + ${o.paymentStatus} + ')'"></span>
+            </p>
+            <p class="mb-1 small" th:unless="${o.pickup}">Deliver to: <span th:text="${o.deliveryAddress}"></span></p>
+            <ul class="mb-2">
+                <li th:each="i : ${o.items}" th:text="${i.quantity} + ' x ' + ${i.itemName}"></li>
+            </ul>
+            <p class="fw-semibold mb-2" th:text="'Total $' + ${#numbers.formatDecimal(o.totalAmount, 1, 2)}"></p>
+
+            <!-- Buttons depend on the current status -->
+            <div class="d-flex gap-2">
+                <th:block th:if="${o.status.name() == 'PLACED'}">
+                    <form th:action="@{/owner/orders/{id}/accept(id=${o.id})}" method="post">
+                        <button class="btn btn-sm btn-success">Accept &amp; start preparing</button>
+                    </form>
+                    <form th:action="@{/owner/orders/{id}/reject(id=${o.id})}" method="post"
+                          onsubmit="return confirm('Reject this order?');">
+                        <button class="btn btn-sm btn-outline-danger">Reject</button>
+                    </form>
+                </th:block>
+                <form th:if="${o.status.name() == 'PREPARING'}" th:action="@{/owner/orders/{id}/ready(id=${o.id})}" method="post">
+                    <button class="btn btn-sm btn-primary"
+                            th:text="${o.pickup} ? 'Ready for pickup' : 'Send out for delivery'">Ready</button>
+                </form>
+                <form th:if="${o.status.name() == 'OUT_FOR_DELIVERY' or o.status.name() == 'READY_FOR_PICKUP'}"
+                      th:action="@{/owner/orders/{id}/complete(id=${o.id})}" method="post">
+                    <button class="btn btn-sm btn-success"
+                            th:text="${o.pickup} ? 'Mark picked up' : 'Mark delivered'">Complete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Edit Menu Item')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<div class="container" style="max-width: 520px;">
+    <a th:href="@{/owner}" class="small">&larr; Back</a>
+    <div class="card shadow-sm mt-2">
+        <div class="card-body">
+            <h4>Edit menu item</h4>
+            <form th:action="@{/owner/menu/{id}(id=${item.id})}" method="post">
+                <div class="mb-2">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" class="form-control" th:value="${item.name}" required>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Description</label>
+                    <input type="text" name="description" class="form-control" th:value="${item.description}">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label">Price</label>
+                    <input type="number" name="price" step="0.01" min="0.01" class="form-control" th:value="${item.price}" required>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" name="available" value="true" id="available"
+                           th:checked="${item.available}">
+                    <label class="form-check-label" for="available">Show on menu</label>
+                </div>
+                <button class="btn btn-danger">Save changes</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

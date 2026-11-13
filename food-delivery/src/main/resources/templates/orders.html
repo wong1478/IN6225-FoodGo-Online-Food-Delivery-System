@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('My Orders')}"></head>
+<body>
+<nav th:replace="~{fragments :: navbar}"></nav>
+
+<div class="container">
+    <div th:replace="~{fragments :: messages}"></div>
+    <h2>My orders</h2>
+
+    <p th:if="${orders.isEmpty()}" class="text-muted">You haven't ordered anything yet. <a th:href="@{/}">Order now</a></p>
+
+    <table th:unless="${orders.isEmpty()}" class="table bg-white align-middle">
+        <thead>
+        <tr><th>#</th><th>Date</th><th>Restaurant</th><th>Total</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="o : ${orders}">
+            <td th:text="${o.id}">1</td>
+            <td th:text="${#temporals.format(o.createdAt, 'dd MMM yyyy HH:mm')}"></td>
+            <td th:text="${o.restaurant.name}"></td>
+            <td th:text="'$' + ${#numbers.formatDecimal(o.totalAmount, 1, 2)}"></td>
+            <td><span th:replace="~{fragments :: statusBadge(${o.status})}"></span></td>
+            <td><a th:href="@{/orders/{id}(id=${o.id})}" class="btn btn-sm btn-outline-danger">Track / details</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

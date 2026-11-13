@@ -1,0 +1,50 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.restaurant-card {
+    transition: transform 0.15s;
+}
+
+.restaurant-card:hover {
+    transform: translateY(-3px);
+}
+
+/* Order tracking bar */
+.tracker {
+    display: flex;
+    justify-content: space-between;
+    margin: 1.5rem 0;
+}
+
+.tracker .step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    font-size: 0.85rem;
+    color: #adb5bd;
+}
+
+.tracker .step .dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #dee2e6;
+    margin: 0 auto 0.4rem;
+    line-height: 28px;
+    color: white;
+    font-weight: bold;
+}
+
+.tracker .step.done {
+    color: #198754;
+    font-weight: 600;
+}
+
+.tracker .step.done .dot {
+    background: #198754;
+}
+
+.stars {
+    color: #f5a623;
+}
